@@ -85,7 +85,7 @@
         <div class="columns is-centered">
           <div class="column has-text-centered">
 
-            <h1 class="title is-1 publication-title">GauUscene</h1>
+            <h1 class="title is-1 publication-title">TripleS-Gaussian: Align Geometry and Rendering for Large Scale Scene Reconstruction with Gausian Representation</h1>
             <div class="is-size-5 publication-authors">
 
 
@@ -133,19 +133,8 @@
           <h2 class="title is-3">Abstract</h2>
           <div class="content has-text-justified">
             <p>
-              We introduce a novel, multimodal large-scale scene reconstruction benchmark that utilizes newly developed 3D 
-              representation approaches: Gaussian Splatting and Neural Radiance Fields (NeRF). Our expansive U-Scene dataset 
-              surpasses any previously existing real large-scale outdoor LiDAR and image dataset in both area and point count. 
-              U-Scene encompasses over 6.5 square kilometers and features a comprehensive RGB dataset coupled with 
-              LiDAR ground truth. Additionally, we are the first to propose a LiDAR and image alignment method for a 
-              drone-based dataset. Our assessment of U-Scene includes a detailed analysis across various novel viewpoints, 
-              employing image-based metrics such as SSIM, LPIPS, and PSNR on NeRF and Gaussian Splatting based methods. 
-              This analysis reveals contradictory results when applying geometric-based metrics like Chamfer distance. 
-              The experimental results on our multimodal dataset highlight the unreliability of current image-based metrics 
-              and reveal significant drawbacks in geometric reconstruction using the current Gaussian Splatting-based method, 
-              further illustrating the necessity of our dataset for assessing geometry reconstruction tasks. 
-              We also provide detailed supplementary information on data collection protocols and make 
-              the dataset available on the following anonymous project page
+Current large-scale 3D reconstruction poses challenges like high memory consumption, lack of geometry ground truth for comparison, and lighting variations that conflict between rendering quality and geometry accuracy. Previous methods enable its training through memory reduction or spatial division but often neglect geometry accuracy due to balancing difficulties. In this work, we address these challenges by proposing TripleS (Separation, Staging, Semantics) Gaussian. Our main contributions are: (1) providing a large-scale dataset with both images and high-accuracy LiDAR point clouds; (2) introducing an attention-aware separation method to partition the dataset into manageable chunks, facilitating reconstruction and isolating lighting variations; (3) proposing semantic-aware frequency guidance to enhance geometry accuracy using Gaussian representation; and (4) resolving rendering and geometry conflicts with a staging strategy during training.
+
             </p>
             <div class="column is-four-fifths">
             </div>
@@ -884,6 +873,113 @@
       </p>
     </div>
   </section>
+
+
+  <script>
+    var left_images = ["SUGAR.JPG", "3DGS.JPG", "NERFACTO.JPG", "INSTANTNGP.JPG"];
+    var right_images = ["SAM_GS_ALPHA.JPG", "SAM_GS_SHAPE_ONLY.JPG", "EXTRACTED_POINT_ALPHA.JPG", "EXTRACTED_POINT_SHAPE_ONLY.JPG"];
+    var folders = ["CUHK_LOWER", "CUHK_UPPER", "HAV", "LFLS", "SMBU", "SZIIT"];
+    var locations = ["Campus", "Modern Building", "Village", "Residence", "Russian Building", "College"];
+    var lefts = ["SuGaR", "Vanilla GS", "Nerfacto", "Instant NGP"];
+    var rights = ["SAM-GS Alpha", "SAM-GS Shape Only", "Extracted Point Alpha", "Extracted Point Shape Only"];
+    var location_index = 0, left_index = 0, right_index = 0;
+
+
+    function update_location() {
+      const selectBox = document.getElementById("location_option");
+      location_index = selectBox.selectedIndex;
+      document.getElementById("position").innerText = locations[location_index];
+      document.getElementById("path_left").src = "static/visualization_pc_jpg/" + folders[location_index] + "/" + left_images[left_index];
+      document.getElementById("path_right").src = "static/visualization_pc_jpg/" + folders[location_index] + "/" + right_images[right_index];
+    }
+
+    function update_left() {
+      const selectBox = document.getElementById("left_option");
+      left_index = selectBox.selectedIndex;
+      document.getElementById("path_left").src = "static/visualization_pc_jpg/" + folders[location_index] + "/" + left_images[left_index];
+    }
+
+    function update_right() {
+      const selectBox = document.getElementById("right_option");
+      right_index = selectBox.selectedIndex;
+      document.getElementById("path_right").src = "static/visualization_pc_jpg/" + folders[location_index] + "/" + right_images[right_index];
+    }
+  </script>
+  <div class="container is-fullhd">
+    <div class="columns is-centered">
+      <h2 class="title">Comparison</h2>
+    </div>
+  </div>
+  <br />
+  <div class="container is-fullhd">
+    <div class="columns is-centered has-text-centered">
+      <div class="table-container">
+        <div class="content">
+          <table>
+            <tr>
+              <th width="20%">Location</th>
+              <th width="40%">Left-Hand Side</th>
+              <th width="40%">Right-Hand Side</th>
+            </tr>
+            <tr>
+              <td>
+                <select name="Location" id="location_option" onchange="update_location()">
+                  <option value=0>Campus</option>
+                  <option value=1>Modern Building</option>
+                  <option value=2>Village</option>
+                  <option value=3>Residence</option>
+                  <option value=4>Russian Building</option>
+                  <option value=5>College</option>
+                </select>
+              </td>
+              <td>
+                <select name="Left-Hand Side" id="left_option" onchange="update_left()">
+                  <option value=0>SuGaR</option>
+                  <option value=1>Vanilla GS</option>
+                  <option value=2>Nerfacto</option>
+                  <option value=3>Instant NGP</option>
+                </select>
+              </td>
+              <td>
+                <select name="Right-Hand Side" id="right_option" onchange="update_right()">
+                  <option value=0>SAM-GS Alpha</option>
+                  <option value=1>SAM-GS Shape Only</option>
+                  <option value=2>Extracted Point Alpha</option>
+                  <option value=3>Extracted Point Shape Only</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+  <div class="container is-fullhd">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <div class="twentytwenty-container">
+          <!-- The before image is first -->
+          <img id="path_left" src="static/visualization_pc_jpg/CUHK_LOWER/SUGAR.JPG"
+            style="width: 100%; margin-top: 0;" />
+          <!-- The after image is last -->
+          <img id="path_right" src="static/visualization_pc_jpg/CUHK_LOWER/SAM_GS_ALPHA.JPG"
+            style="width: 100%; margin-top: 0;" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container is-fullhd">
+    <div class="columns is-centered has-text-centered">
+      <h3 class="is-size-5">
+        <b>Location: </b>
+        <b id="position">Campus</b>
+      </h3>
+    </div>
+  </div>
+
+
 
 
   <section class="section" id="BibTeX">
